@@ -44,15 +44,15 @@ int main() {
     vector<int> adj[v];
     for (int i = 0; i < e; i++) {
         int u, v;
-        cout << "Enter edge #" << i + 1 << " as space-separated integers: ";
+        cout << "Enter edges : ";
         cin >> u >> v;
         adj[u].push_back(v);
         adj[v].push_back(u);
     }
     if (iscycle(v, adj)) {
-        cout << "The graph contains a cycle." << endl;
+        cout << "Has a cycle." << endl;
     } else {
-        cout << "The graph does not contain a cycle." << endl;
+        cout << " does not have cycle." << endl;
     }
     return 0;
 }
