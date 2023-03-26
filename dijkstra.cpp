@@ -1,71 +1,79 @@
-#include <bits/stdc++.h>
-using namespace std;
-const int inf = 1e7;
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <climits>
 
-int main()
-{
+using namespace std;
+
+#define INF INT_MAX
+
+// Adjacency list representation of the graph
+vector<pair<int, int>> adjList[100001];
+
+// Dijkstra's algorithm function
+void dijkstra(int source, int destination, int n) {
+    // Initializing distance array and visited array
+    vector<int> dist(n+1, INF);
+    vector<bool> visited(n+1, false);
+    dist[source] = 0;
+
+    // Priority queue for finding the minimum distance vertex
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+
+    // Adding the source vertex to the priority queue
+    pq.push({0, source});
+
+    // Loop until the destination is reached or the priority queue is empty
+    while (!pq.empty()) {
+        // Get the vertex with the minimum distance
+        int u = pq.top().second;
+        pq.pop();
+
+        // If the vertex has already been visited, skip it
+        if (visited[u]) continue;
+
+        // Mark the vertex as visited
+        visited[u] = true;
+
+        // Print the current iteration
+        cout << "Iteration: " << u << endl;
+
+        // Check if the destination has been reached
+        if (u == destination) break;
+
+        // Update the distances of the adjacent vertices
+        for (auto v : adjList[u]) {
+            int vertex = v.first;
+            int weight = v.second;
+
+            if (!visited[vertex] && dist[u] + weight < dist[vertex]) {
+                dist[vertex] = dist[u] + weight;
+                pq.push({dist[vertex], vertex});
+            }
+        }
+    }
+
+    // Print the final distance to the destination
+    cout << "Shortest distance to node 6: " << dist[destination] << endl;
+}
+
+int main() {
     int n, m;
     cin >> n >> m;
 
-    vector<int> dist(n + 1, inf);
-    vector<vector<pair<int, int>>> graph(n + 1);
-
-    for (int i = 0; i < m; i++)
-    {
+    // Reading the edges and their weights
+    for (int i = 0; i < m; i++) {
         int u, v, w;
         cin >> u >> v >> w;
-        graph[u].push_back({v, w});
-        graph[v].push_back({u, w});
+        adjList[u].push_back({v, w});
+        adjList[v].push_back({u, w}); // for undirected graph
     }
 
-    int source;
-    cin >> source;
+    dijkstra(1, 6, n);
 
-    dist[source] = 0;
-
-    set<pair<int, int>> s;
-    for (int i = 1; i <= n; i++)
-    {
-        if (dist[i] < inf)
-            cout << dist[i] << "\t";
-        else
-            cout << -1 << "\t";
-    }
-    cout << "\n";
-
-        // {wt, vertex}
-        s.insert({0, source});
-    while (!s.empty())
-    {
-        auto x = *(s.begin());
-        s.erase(x);
-        for (auto i : graph[x.second])
-        {
-            if (dist[i.first] > dist[x.second] + i.second)
-            {
-                s.erase({dist[i.first], i.first});
-                dist[i.first] = dist[x.second] + i.second;
-                s.insert({dist[i.first], i.first});
-            }
-        }
-        for (int i = 1; i <= n; i++)
-        {
-            if (dist[i] < inf)
-                cout << dist[i] << "\t";
-            else
-                cout << -1 << "\t";
-        }
-        cout << "\n";
-    }
-    cout << "final output: \t";
-    for (int i = 1; i <= n; i++)
-    {
-        if (dist[i] < inf)
-            cout << dist[i] << "\t";
-        else
-            cout << -1 << "\t";
-    }
+    return 0;
 }
+
 
 /*
 
